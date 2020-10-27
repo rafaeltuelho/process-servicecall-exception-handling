@@ -1,0 +1,11 @@
+.classpath
+.project
+.settings
+.factorypath
+.vscode
+.DS_Store
+*.iml
+.~lock*
+/bin/
+/target/
+/*ObjectStore*/

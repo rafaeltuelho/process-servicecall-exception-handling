@@ -1,0 +1,71 @@
+package com.redhat.demos;
+
+import static org.junit.Assert.assertEquals;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.jbpm.test.JbpmJUnitBaseTestCase;
+import org.junit.Test;
+import org.kie.api.runtime.KieSession;
+import org.kie.api.runtime.manager.RuntimeEngine;
+import org.kie.api.runtime.manager.RuntimeManager;
+import org.kie.api.runtime.process.ProcessInstance;
+import org.kie.api.task.TaskService;
+import org.kie.api.task.model.TaskSummary;
+import org.kie.internal.runtime.manager.context.ProcessInstanceIdContext;
+import org.slf4j.LoggerFactory;
+
+import ch.qos.logback.classic.Logger;
+
+public class ProcessTest extends JbpmJUnitBaseTestCase {
+    private static final Logger logger = (Logger)LoggerFactory.getLogger(ProcessTest.class);
+
+    public ProcessTest() {
+        super(true, true);
+    }
+
+    @Test
+    public void testProcess() {
+        // create runtime manager with single process - hello.bpmn
+        RuntimeManager runtimeManager = createRuntimeManager("com/redhat/demos/MyProcess.bpmn");
+
+        // take RuntimeManager to work with jBPM engine
+        // RuntimeEngine runtimeEngine = getRuntimeEngine(ProcessInstanceIdContext.get());
+        RuntimeEngine runtimeEngine = getRuntimeEngine();
+        KieSession ksession = runtimeEngine.getKieSession();
+        TaskService taskService = runtimeEngine.getTaskService();
+
+        long ksessionID = ksession.getIdentifier();
+
+        // start process
+        Map<String, Object> pParams = new HashMap<>();
+        pParams.put("message", "Test!!!");
+        ProcessInstance processInstance = ksession.startProcess("SampleProcess", pParams);
+
+        assertProcessVarExists(processInstance, "message");
+        assertProcessInstanceActive(processInstance.getId(), ksession);
+        assertNodeTriggered(processInstance.getId(), "Start", "Hello");
+
+        taskService = runtimeEngine.getTaskService();
+        assertEquals(ksessionID, ksession.getIdentifier());
+
+        // let john execute Task 1
+        List<TaskSummary> list = taskService.getTasksAssignedAsPotentialOwner("john", "en-UK");
+        TaskSummary task = list.get(0);
+        logger.info("John is executing task {}", task.getName());
+        //taskService.claim(task.getId(), "john");
+        taskService.start(task.getId(), "john");
+
+        Map<String, Object> tParams = new HashMap<>();
+        tParams.put("notes", "oK from human!");
+        taskService.complete(task.getId(), "john", tParams);
+
+        // check whether the process instance has completed successfully
+        assertProcessInstanceCompleted(processInstance.getId());
+
+        // check what nodes have been triggered
+        assertNodeTriggered(processInstance.getId(), "End");
+    }    
+}
