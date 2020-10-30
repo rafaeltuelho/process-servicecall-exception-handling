@@ -3,6 +3,14 @@
     <repository>
       <include>true</include>
       <metadata>
+        <id>jboss_ga_plugin_repository</id>
+        <url>https://maven.repository.redhat.com/ga/</url>
+        <source>SETTINGS</source>
+      </metadata>
+    </repository>
+    <repository>
+      <include>true</include>
+      <metadata>
         <id>jboss_ga_repository</id>
         <url>https://maven.repository.redhat.com/ga/</url>
         <source>SETTINGS</source>
@@ -14,14 +22,6 @@
         <id>local</id>
         <url>/Users/rsoares/.m2/repository</url>
         <source>LOCAL</source>
-      </metadata>
-    </repository>
-    <repository>
-      <include>true</include>
-      <metadata>
-        <id>jboss_ga_plugin_repository</id>
-        <url>https://maven.repository.redhat.com/ga/</url>
-        <source>SETTINGS</source>
       </metadata>
     </repository>
     <repository>
