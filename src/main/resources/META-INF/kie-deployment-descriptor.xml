@@ -23,7 +23,7 @@
     <work-item-handlers>
         <work-item-handler>
             <resolver>mvel</resolver>
-            <identifier>new org.jbpm.process.workitem.rest.RESTWorkItemHandler(classLoader)</identifier>
+            <identifier>new org.jbpm.process.workitem.rest.RESTWorkItemHandler(classLoader, "ExceptionHandlerSubProcess", "RETRY")</identifier>
             <parameters/>
             <name>Rest</name>
         </work-item-handler>
