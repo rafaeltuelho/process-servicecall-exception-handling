@@ -28,7 +28,7 @@ Use the HTTP Response Code to test the Service Call response.
 
 ### Rest Service Call with Signal Exception Handling using an Event Sub process
 
-![ServiceCall](./src/main/resources/com/redhat/demos/RestCallWithExceptionHandlerSignal.bpmn.svg)
+![ServiceCall](./src/main/resources/com/redhat/demos/ServiceCallWithExceptionSignalHandler-svg.svg)
 
 #### Use the [SignallingTaskHandlerDecorator](https://github.com/kiegroup/jbpm/blob/master/jbpm-bpmn2/src/main/java/org/jbpm/bpmn2/handler/SignallingTaskHandlerDecorator.java)
 jBPM comes with a special Work Item handler Wrapper that can be used to decorate the [REST Service Task](https://github.com/kiegroup/jbpm/blob/master/jbpm-workitems/jbpm-workitems-rest/src/main/java/org/jbpm/process/workitem/rest/RESTWorkItemHandler.java) to send a Signal to the process instance when an exception occurs. To use it change the [kie-deployment-descriptor.xml](src/main/resources/META-INF/kie-deployment-descriptor.xml) to register it:
@@ -48,10 +48,10 @@ jBPM comes with a special Work Item handler Wrapper that can be used to decorate
 ### Rest Service Call with Exception Handling using a Sub process
 
  * Main Process
-![ServiceCall](./src/main/resources/com/redhat/demos/RestCallWithExceptionHandler.bpmn.svg) 
+![ServiceCall](./src/main/resources/com/redhat/demos/ServiceCallWithNoExceptionHandler-svg.svg) 
 
  * Sub process (exception handler)
-![ServiceCall](./src/main/resources/com/redhat/demos/ExceptionHandlerSubProcess-svg.svg) 
+![ServiceCall](./src/main/resources/com/redhat/demos/ExceptionHandlerSubProcess-svg.svg)
 
 This strategy is explained in detail in this blog post: http://mswiderski.blogspot.com/2018/10/handle-service-exceptions-via-subprocess.html
 
@@ -85,4 +85,4 @@ curl --location --request POST 'http://localhost:8080/kie-server/services/rest/s
 }'
 ```
 
-> Note: I'm intentionly using `https://api.covid19api.com/summary/x` which should get a 404 http error as this url is invalid (`/x`)
+> Note: I'm intentionly using `https://api.covid19api.com/summary/x` which should result in a `404` http error as this url is invalid (`/x`)
