@@ -8,9 +8,9 @@
   <name>process-servicecall-exception-handling</name>
   <description>process-servicecall-exception-handling</description>
   <properties>
-    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <maven.compiler.source>1.8</maven.compiler.source>
     <kieVersion>7.39.0.Final-redhat-00007</kieVersion>
+    <maven.compiler.source>1.8</maven.compiler.source>
+    <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
     <maven.compiler.target>1.8</maven.compiler.target>
   </properties>
   <dependencies>
