@@ -4,12 +4,34 @@
 
 ### Simple generic exception handler using Intermediate Error Catch Event
 
-![ServiceCall](./src/main/resources/com/redhat/demos/ThrowCatchError-svg.svg)
+![ThrowCatchError](./src/main/resources/com/redhat/demos/ThrowCatchError-svg.svg)
+
+### Rest Service Call with Signal Exception Handling using an Event Sub process
+Use the HTTP Response Code to test the Service Call response.
+
+![ServiceCallWithErrorEvent](./src/main/resources/com/redhat/demos/ServiceCallWithErrorEvent-svg.svg)
+
+> Make sure the `HandleResponseErrors` (in the REST Service Task input parameters (Data Mapping)) is set to `false`.
+
+ To use this strategy change the [kie-deployment-descriptor.xml](src/main/resources/META-INF/kie-deployment-descriptor.xml) to register the Rest Service Task.
+
+```xml
+     <work-item-handlers>
+        <work-item-handler>
+            <resolver>mvel</resolver>
+            <identifier>new org.jbpm.process.workitem.rest.RESTWorkItemHandler(classLoader)</identifier>
+            <parameters/>
+            <name>Rest</name>
+        </work-item-handler>
+    </work-item-handlers>
+```
+
+> In this scenario if the reviwer sets the `serviceRetry = true` the event Subprocess ends with a Signal Event that will instantiate a new process instance to retry the service call.
 
 ### Service call without Exception Handling strategy. 
 Use the HTTP Response Code to test the Service Call response.
 
-![ServiceCall](./src/main/resources/com/redhat/demos/ServiceCallWithNoExceptionHandler-svg.svg)
+![ServiceCallWithNoExceptionHandler](./src/main/resources/com/redhat/demos/ServiceCallWithNoExceptionHandler-svg.svg)
 
 > Make sure the `HandleResponseErrors` (in the REST Service Task input parameters (Data Mapping)) is set to `false`.
 
@@ -28,7 +50,7 @@ Use the HTTP Response Code to test the Service Call response.
 
 ### Rest Service Call with Signal Exception Handling using an Event Sub process
 
-![ServiceCall](./src/main/resources/com/redhat/demos/ServiceCallWithExceptionSignalHandler-svg.svg)
+![ServiceCallWithExceptionSignalHandler](./src/main/resources/com/redhat/demos/ServiceCallWithExceptionSignalHandler-svg.svg)
 
 #### Use the [SignallingTaskHandlerDecorator](https://github.com/kiegroup/jbpm/blob/master/jbpm-bpmn2/src/main/java/org/jbpm/bpmn2/handler/SignallingTaskHandlerDecorator.java)
 jBPM comes with a special Work Item handler Wrapper that can be used to decorate the [REST Service Task](https://github.com/kiegroup/jbpm/blob/master/jbpm-workitems/jbpm-workitems-rest/src/main/java/org/jbpm/process/workitem/rest/RESTWorkItemHandler.java) to send a Signal to the process instance when an exception occurs. To use it change the [kie-deployment-descriptor.xml](src/main/resources/META-INF/kie-deployment-descriptor.xml) to register it:
@@ -45,13 +67,18 @@ jBPM comes with a special Work Item handler Wrapper that can be used to decorate
 ```
 > Note: make sure you set the `HandleResponseErrors` parameter to `true` in the *Rest Service Task* (`RESTWorkItemHandler`). This parameter is used to properly handle the exception. Otherwise it will just log the Http request error and return the error code in the `Result` output parameter.
 
+> In this scenario if the reviwer sets the `serviceRetry = true` the event Subprocess ends with a Signal Event that will instantiate a new process instance to retry the service call. 
+
+> Also in this scenario the main process instance **will remain active wainting at the Rest Service task Node...**
+
+
 ### Rest Service Call with Exception Handling using a Sub process
 
  * Main Process
-![ServiceCall](./src/main/resources/com/redhat/demos/ServiceCallWithNoExceptionHandler-svg.svg) 
+![ServiceCallWithNoExceptionHandler](./src/main/resources/com/redhat/demos/ServiceCallWithNoExceptionHandler-svg.svg) 
 
  * Sub process (exception handler)
-![ServiceCall](./src/main/resources/com/redhat/demos/ExceptionHandlerSubProcess-svg.svg)
+![ExceptionHandlerSubProcess](./src/main/resources/com/redhat/demos/ExceptionHandlerSubProcess-svg.svg)
 
 This strategy is explained in detail in this blog post: http://mswiderski.blogspot.com/2018/10/handle-service-exceptions-via-subprocess.html
 
@@ -67,6 +94,8 @@ To use this strategy change the [kie-deployment-descriptor.xml](src/main/resourc
         </work-item-handler>
     </work-item-handlers>
 ```
+
+> Note: make sure you set the `HandleResponseErrors` parameter to `true` in the *Rest Service Task* (`RESTWorkItemHandler`). This parameter is used to properly handle the exception. Otherwise it will just log the Http request error and return the error code in the `Result` output parameter.
 
 ## Testing
 After building and deploying your kjar you can test it via Rest API with:
